@@ -21,7 +21,9 @@ axios.interceptors.response.use(function (response) {
     return Promise.reject(error);
 });
 var instance = axios.create({
-    baseURL: 'http://localhost:7001/',
+    // baseURL: 'http://localhost:7001/',
+    baseURL: 'http://localhost:7002/',
+    // baseURL: '120.78.173.0/',
     timeout: 1000,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

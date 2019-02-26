@@ -1,5 +1,5 @@
 let totalState = {
-    token:null
+    token:null,
 };
 export default function (state = totalState, action) {
     switch (action.type) {

@@ -1,0 +1,34 @@
+@rex : 1rem/200;
+.check_lists{
+    display: flex;
+    flex-wrap: wrap;
+    .check_list{
+        display: flex;
+        height: 24*@rex;
+        line-height: 24*@rex;
+        align-items: center;
+        min-width: 110*@rex;
+        margin-bottom: 25*@rex;
+        .check_input{
+            width: 24*@rex;
+            border: 1px solid #5f5f5f;
+            position: relative;
+            height: 24*@rex;
+            .is_checked{
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 24*@rex;
+                height: 17*@rex;
+                .pic{
+                    width: 100%;
+                    height: 100%;
+                    float: left;
+                }
+            }
+        }
+        .check_name{
+            padding-left: 12*@rex;
+        }
+    }
+}

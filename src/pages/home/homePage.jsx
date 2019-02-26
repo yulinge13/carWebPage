@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { Checkbox } from 'antd';
 import './home.less'
 import bg from "../../static/images/bg.jpg"
-import ReactSwipe from 'react-swipes'
+import httpLists from '../../utils/http'
+import SwiperCom from '../../components/swiper/index'
+import CheckedCom from '../../components/checked/index'
+import imgBg from '../../static/images/title.png'
+let { containHttp } = httpLists
+const { getProductInfo } = containHttp
 class HomePage extends Component {
     constructor(props) {
         super(props)
@@ -11,131 +15,140 @@ class HomePage extends Component {
                 {
                     name: '苹果',
                     val: 1,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 2,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 3,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 4,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 5,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 6,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 7,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 8,
-                    onOff: false
+                    isChecked: false
                 },
                 {
                     name: '苹果',
                     val: 9,
-                    onOff: false
+                    isChecked: false
                 }
             ],
             selectCarListsVal: [],
-            opt: {
-                distance: 320, // 每次移动的距离，卡片的真实宽度
-                currentPoint: 1,// 初始位置，默认从0即第一个元素开始
-                autoPlay: false, // 是否开启自动播放
-                swTouchstart: (ev) => {
-
+            provinceLists: [],//省
+            provinceValue: '',//省的id
+            cityLists: [],//城市
+            cityValue: '',//城市的id
+            carBannerListsOne: [
+                {
+                    name: '哈哈哈哈',
+                    url: ''
                 },
-                swTouchmove: (ev) => {
-
+                {
+                    name: '哈哈哈哈',
+                    url: ''
                 },
-                swTouchend: (ev) => {
-                    let data = {
-                        moved: ev.moved,
-                        originalPoint: ev.originalPoint,
-                        newPoint: ev.newPoint,
-                        cancelled: ev.cancelled
-                    }
-                    console.log(data);
-                    this.setState({
-                        curCard: ev.newPoint
-                    })
+                {
+                    name: '哈哈哈哈',
+                    url: ''
+                },
+                {
+                    name: '哈哈哈哈',
+                    url: ''
                 }
-            }
+            ],
+            name:'',//姓名
+            tel:'',//手机号
+            
         }
+    }
+    componentDidMount() {
+        this.getAreaLists(0)
     }
     componentWillReceiveProps() {
     }
-    //预约 选择的 车子类型
-    handleChange(e, i) {
-        console.log(e.checked)
-        console.log(i.onOff)
-        let { selectCarListsVal, carLists } = this.state
-        const { value } = e.target
-        if (!i.onOff) {
-            selectCarListsVal.push(value)
-            i.onOff = true
-            this.setState({
-                carLists
-            }, () => {
-                console.log(carLists)
-            })
-
-        } else {
-            var arr = [];
-            console.log(carLists)
-            selectCarListsVal.forEach(i => {
-                if (i.onOff) {
-                    arr.push(i.val)
+    //获取省市区
+    getAreaLists(id) {
+        getProductInfo({ id }).then(res => {
+            if (res.success) {
+                if (id == 0) {
+                    this.setState({
+                        provinceLists: res.data || []
+                    })
+                } else {
+                    this.setState({
+                        cityLists: res.data || []
+                    })
                 }
-            })
-            console.log(arr)
-            this.setState({
-                selectCarListsVal: arr
-            }, () => {
-                i.onOff = false
-                this.setState({
-                    carLists
-                }, () => {
-                    console.log(carLists)
-                })
-            })
-        }
+            }
+        })
+    }
+    //获取选中的车子类型
+    sendCheckedValues(val) {
+        console.log(val);
+    }
+    //选择省份
+    selectProvince(e) {
+        const { value } = e.target
+        this.setState({
+            provinceValue: value
+        }, () => {
+            this.getAreaLists(value)
+        })
+    }
+    //选择城市
+    selectCity(e) {
+        const { value } = e.target
+        this.setState({
+            cityValue: value
+        })
+    }
+    //预约
+    submitData(){
+
     }
     render() {
-        const { carLists, selectCarListsVal, opt } = this.state
-        console.log(selectCarListsVal)
+        const { carLists, carBannerListsOne, provinceLists, cityLists } = this.state
+        console.log(provinceLists);
         return (
             <div className="home_page">
                 <img className="bg" src={bg} alt="" />
                 <div className="ask_price">
+                    <div className="title_bg">
+                        <img src={imgBg} />
+                    </div>
                     <div className="title">
                         *请选择您的关注车型
                     </div>
                     <div className="choice_car">
-                        {
-                            carLists.map((i, index) => {
-                                return (
-                                    <label key={index}><input onChange={e => this.handleChange(e, i)} type="checkbox" value={i.val} />{i.name} </label>
-                                )
-                            })
-                        }
+                        <CheckedCom
+                            sendCheckedValues={this.sendCheckedValues.bind(this)}
+                            data={carLists}
+                        />
                     </div>
                     <div className="fill_lists">
                         <div className="fill_list">
@@ -158,22 +171,30 @@ class HomePage extends Component {
                             <div className="fill_list_tow">
                                 <div className="fill_list_tow_name">省份</div>
                                 <div className="fill_list_tow_val">
-                                    <select>
-                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="opel">Opel</option>
-                                        <option value="audi">Audi</option>
+                                    <select onChange={e => this.selectProvince(e)}>
+                                        <option value="" >请选择</option>
+                                        {
+                                            provinceLists.map((i, index) => {
+                                                return (
+                                                    <option value={i.id} key={index}>{i.area_name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>
                             <div className="fill_list_tow fill_list_three">
-                                <div className="fill_list_tow_name">省份</div>
+                                <div className="fill_list_tow_name">城市</div>
                                 <div className="fill_list_tow_val">
-                                    <select>
-                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="opel">Opel</option>
-                                        <option value="audi">Audi</option>
+                                    <select onChange={e => this.selectCity(e)}>
+                                        <option value="" >请选择</option>
+                                        {
+                                            cityLists.map((i, index) => {
+                                                return (
+                                                    <option value={i.id} key={index}>{i.area_name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -187,11 +208,11 @@ class HomePage extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="is_read">
+                    {/* <div className="is_read">
                         <Checkbox />
                         <div className="is_read_cont">我已经阅读并同意《隐私政策》里的各项内容</div>
-                    </div>
-                    <div className="submit_btn">立即报名</div>
+                    </div> */}
+                    <div className="submit_btn" onClick={this.submitData.bind(this)}>立即报名</div>
                 </div>
                 <div className="distributor">
                     <div className="choic_area">
@@ -230,16 +251,19 @@ class HomePage extends Component {
                         *经销商排名不分先后
                     </div>
                 </div>
-                <div className="car_swiper">
-                    <div className="card-swipe" >
-                        <ReactSwipe className="card-slide" options={opt}>
-                            {[1, 2, 3, 4, 5].map((val, index) => (
-                                <div className="item" key={index}>
-                                    {val}
-                                </div>
-                            ))}
-                        </ReactSwipe>
+                <div className="car_swiper_one">
+                    <div className="nav_lists">
+                        <div className="nav_list"></div>
                     </div>
+                    <SwiperCom>
+                        {
+                            carBannerListsOne.map((i, index) => {
+                                return (
+                                    <div className="car_pic" key={index}>{i.name}</div>
+                                )
+                            })
+                        }
+                    </SwiperCom>
                 </div>
             </div>
         )

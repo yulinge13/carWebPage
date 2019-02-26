@@ -141,7 +141,19 @@ const httpLists = {
                 data
             })
             return handleHttp(res)
-        }
+        },
+
+
+
+
+        //获取省市级区
+        async getProductInfo(data){
+            const res = await httpGet({
+                url: '/getArea',
+                data
+            })
+            return handleHttp(res)
+        },
     }
 }
 export default httpLists

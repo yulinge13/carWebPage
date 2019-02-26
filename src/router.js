@@ -5,6 +5,7 @@ import User from './pages/user/user'
 import Order from './pages/order/order'
 import OrderDetail from './pages/orderDetail/orderDetail'
 import ProductDetail from './pages/productDetail/productDetail'
+import SwiperCom from './components/swiper/index'
 export const router = [
     {
         path:'/',
@@ -39,6 +40,11 @@ export const router = [
     {
         path:'/productDetail',
         component:ProductDetail,
+        exact:true
+    },
+    {
+        path:'/swiper',
+        component:SwiperCom,
         exact:true
     }
 ]
