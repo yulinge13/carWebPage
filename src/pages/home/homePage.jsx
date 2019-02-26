@@ -5,6 +5,18 @@ import httpLists from '../../utils/http'
 import SwiperCom from '../../components/swiper/index'
 import CheckedCom from '../../components/checked/index'
 import imgBg from '../../static/images/title.png'
+import pic1 from '../../static/images/pic10.jpg'
+import pic2 from '../../static/images/pic11.jpg'
+import pic3 from '../../static/images/pic12.jpg'
+import pic4 from '../../static/images/pic13.jpg'
+import sing1 from '../../static/images/tanyue.png'
+import sing2 from '../../static/images/tange.png'
+import sing3 from '../../static/images/tan.png'
+import sing4 from '../../static/images/ge.png'
+import icon1 from '../../static/images/pic.png'
+import icon2 from '../../static/images/pic1.png'
+import icon3 from '../../static/images/pic2.png'
+import icon4 from '../../static/images/pic3.png'
 let { containHttp } = httpLists
 const { getProductInfo } = containHttp
 class HomePage extends Component {
@@ -65,25 +77,53 @@ class HomePage extends Component {
             cityValue: '',//城市的id
             carBannerListsOne: [
                 {
-                    name: '哈哈哈哈',
-                    url: ''
+                    url: pic1,
+                    sing: sing1
                 },
                 {
-                    name: '哈哈哈哈',
-                    url: ''
+                    url: pic2,
+                    sing: sing1
+                },
+            ],
+            carBannerListsTwo: [
+                {
+                    url: pic3,
+                    sing: sing2
                 },
                 {
-                    name: '哈哈哈哈',
-                    url: ''
+                    url: pic4,
+                    sing: sing2
+                },
+            ],
+            name: '',//姓名
+            tel: '',//手机号
+            navLists: [
+                {
+                    name: '探岳'
                 },
                 {
-                    name: '哈哈哈哈',
-                    url: ''
+                    name: '探歌'
                 }
             ],
-            name:'',//姓名
-            tel:'',//手机号
-            
+            selectNavIndex: 0,
+            detailsPicListsOne: [
+                {
+                    url: pic1
+                },
+                {
+                    url: pic2
+                }
+            ],
+            detailsPicListsTwo: [
+                {
+                    url: pic3
+                },
+                {
+                    url: pic4
+                }
+            ],
+            distributorLists:[],//经销商
+
         }
     }
     componentDidMount() {
@@ -128,12 +168,32 @@ class HomePage extends Component {
         })
     }
     //预约
-    submitData(){
+    submitData() {
 
     }
+    //nav select
+    selectNav(index) {
+        this.setState({
+            selectNavIndex: index
+        })
+    }
+    //选择经销商
+    selectDistributor(e){
+        console.log(e.target.value)
+    }
     render() {
-        const { carLists, carBannerListsOne, provinceLists, cityLists } = this.state
-        console.log(provinceLists);
+        const {
+            carLists,
+            carBannerListsOne,
+            carBannerListsTwo,
+            provinceLists,
+            cityLists,
+            navLists,
+            selectNavIndex,
+            detailsPicListsOne,
+            detailsPicListsTwo,
+            distributorLists
+        } = this.state
         return (
             <div className="home_page">
                 <img className="bg" src={bg} alt="" />
@@ -157,6 +217,7 @@ class HomePage extends Component {
                             </div>
                             <div className="fill_val">
                                 <input type="text" />
+                                <img className="icon icon1" src={icon1} alt="" />
                             </div>
                         </div>
                         <div className="fill_list">
@@ -165,6 +226,7 @@ class HomePage extends Component {
                             </div>
                             <div className="fill_val">
                                 <input type="text" />
+                                <img className="icon icon2" src={icon2} alt="" />
                             </div>
                         </div>
                         <div className="fill_lists_tow">
@@ -196,6 +258,7 @@ class HomePage extends Component {
                                             })
                                         }
                                     </select>
+                                    <img className="icon" src={icon3} alt="" />
                                 </div>
                             </div>
                         </div>
@@ -204,7 +267,17 @@ class HomePage extends Component {
                                 经销商
                             </div>
                             <div className="fill_val">
-                                <input type="text" />
+                                <select onChange={e => this.selectDistributor(e)}>
+                                    <option value="" >请选择</option>
+                                    {
+                                        distributorLists.map((i, index) => {
+                                            return (
+                                                <option value={i.id} key={index}>{i.name}</option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                                <img className="icon icon3" src={icon4} alt="" />
                             </div>
                         </div>
                     </div>
@@ -220,23 +293,32 @@ class HomePage extends Component {
                             <div className="fill_list_tow">
                                 <div className="fill_list_tow_name">省份</div>
                                 <div className="fill_list_tow_val">
-                                    <select>
-                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="opel">Opel</option>
-                                        <option value="audi">Audi</option>
+                                    <select onChange={e => this.selectProvince(e)}>
+                                        <option value="" >请选择</option>
+                                        {
+                                            provinceLists.map((i, index) => {
+                                                return (
+                                                    <option value={i.id} key={index}>{i.area_name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>
                             <div className="fill_list_tow fill_list_three">
-                                <div className="fill_list_tow_name">省份</div>
+                                <div className="fill_list_tow_name">城市</div>
                                 <div className="fill_list_tow_val">
-                                    <select>
-                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="opel">Opel</option>
-                                        <option value="audi">Audi</option>
+                                    <select onChange={e => this.selectCity(e)}>
+                                        <option value="" >请选择</option>
+                                        {
+                                            cityLists.map((i, index) => {
+                                                return (
+                                                    <option value={i.id} key={index}>{i.area_name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
+                                    <img className="icon" src={icon3} alt="" />
                                 </div>
                             </div>
                         </div>
@@ -253,17 +335,77 @@ class HomePage extends Component {
                 </div>
                 <div className="car_swiper_one">
                     <div className="nav_lists">
-                        <div className="nav_list"></div>
-                    </div>
-                    <SwiperCom>
                         {
-                            carBannerListsOne.map((i, index) => {
+                            navLists.map((i, index) => {
                                 return (
-                                    <div className="car_pic" key={index}>{i.name}</div>
+                                    <div
+                                        className={index === selectNavIndex ? 'nav_list nav_list_active' : 'nav_list'}
+                                        key={index}
+                                        onClick={this.selectNav.bind(this, index)}
+                                    >{i.name}</div>
                                 )
                             })
                         }
-                    </SwiperCom>
+                    </div>
+                    {
+                        selectNavIndex === 0 ? <SwiperCom>
+                            {
+                                carBannerListsOne.map((i, index) => {
+                                    return (
+                                        <div className="car_pic" key={index}>
+                                            <img className="car_img" src={i.url} />
+                                            <img className="car_sing" src={i.sing} />
+                                        </div>
+                                    )
+                                })
+                            }
+                        </SwiperCom> : <SwiperCom>
+                                {
+                                    carBannerListsTwo.map((i, index) => {
+                                        return (
+                                            <div className="car_pic" key={index}>
+                                                <img className="car_img" src={i.url} />
+                                                <img className="car_sing" src={i.sing} />
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </SwiperCom>
+                    }
+                </div>
+                <div className="details">
+                    <div className="detail detail_one">
+                        <div className="detail_sing">
+                            <img src={sing3} />
+                        </div>
+                        <SwiperCom>
+                            {
+                                detailsPicListsOne.map((i, index) => {
+                                    return (
+                                        <div className="detail_pic" key={index}>
+                                            <img className="detail_img" src={i.url} />
+                                        </div>
+                                    )
+                                })
+                            }
+                        </SwiperCom>
+                    </div>
+                    <div className="detail detail_two">
+                        <div className="detail_sing">
+                            <img src={sing4} />
+                        </div>
+                        <SwiperCom>
+                            {
+                                detailsPicListsTwo.map((i, index) => {
+                                    return (
+                                        <div className="detail_pic" key={index}>
+                                            <img className="detail_img" src={i.url} />
+                                        </div>
+                                    )
+                                })
+                            }
+                        </SwiperCom>
+                    </div>
                 </div>
             </div>
         )

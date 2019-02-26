@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import Swiper from 'react-id-swiper';
 import './index.less'
-import CheckedCom from '../checked/index'
 export default class SwiperCom extends Component {
     constructor(props){
         super(props)
-    }
-    sendCheckedValues(val){
-        console.log(val);
     }
     render() {
         const params = {
@@ -23,10 +19,9 @@ export default class SwiperCom extends Component {
         console.log(this);
         return (
             <div className="swiper" >
-                {/* <Swiper {...params}>
+                <Swiper {...params}>
                     {this.props.children}
-                </Swiper> */}
-                <CheckedCom sendCheckedValues={this.sendCheckedValues.bind(this)}/>
+                </Swiper>
             </div>
         )
     }

@@ -61,6 +61,18 @@
             }
             .fill_list_tow_val{
                 width: 218*@rex;
+                position: relative;
+                .icon{
+                    position: absolute;
+                    top:0;
+                    width: 26*@rex;
+                    height: 26*@rex;
+                    right: 10*@rex;
+                    top: 12*@rex;
+                }
+                select{
+                    width: 167*@rex;
+                }
             }
         }
     }
@@ -139,6 +151,18 @@
                     border: 1px solid #545454;
                     border-left: none;
                     background: #fff;
+                    padding-right: 50*@rex;
+                    position: relative;
+                    select{
+                        width: 391*@rex;
+                        height: 100%;
+                        float: left;
+                        border: 0;
+                        outline: none;
+                        padding-left: 10*@rex;
+                        box-sizing: border-box;
+                        font-size: 20*@rex;
+                    }
                     input{
                         width: 100%;
                         height: 100%;
@@ -148,6 +172,28 @@
                         padding-left: 10*@rex;
                         box-sizing: border-box;
                         font-size: 20*@rex;
+                    }
+                    .icon{
+                        position: absolute;
+                        top:0;
+                    }
+                    .icon1{
+                        width: 33*@rex;
+                        height: 34*@rex;
+                        right: 8*@rex;
+                        top: 6*@rex;
+                    }
+                    .icon2{
+                        width: 23*@rex;
+                        height: 36*@rex;
+                        right:14*@rex;
+                        top: 6*@rex;
+                    }
+                    .icon3{
+                        width: 27*@rex;
+                        height: 27*@rex;
+                        right:8*@rex;
+                        top: 10*@rex
                     }
                 }
             }
@@ -221,11 +267,98 @@
             line-height: 72*@rex;
         }
     }
-    .card-swipe{
-        display: flex;
-        width: 100vw;
-        .item{
-            width: 100%;
+    .car_swiper_one{
+        position: absolute;
+        left: 0;
+        width: 100%;
+        top: 4760*@rex;
+        box-sizing: border-box;
+        .nav_lists{
+            display: flex;
+            margin: 0 29*@rex;
+            margin-bottom: 13*@rex;
+            .nav_list{
+                width: 170*@rex;
+                height: 75*@rex;
+                font-size: 32*@rex;
+                background: #fff;
+                border: 1px solid #143b80;
+                text-align: center;
+                font-weight: bold;
+                line-height: 75*@rex;
+                cursor: pointer;
+                color: #143b80;
+            }
+            .nav_list_active{
+                background: #143b80;
+                color: #fff;
+            }
+        }
+        .car_pic{
+            // width: 691*@rex;
+            width:750*@rex;
+            height: 460*@rex;
+            border-bottom: 1px solid #153a80;
+            margin-bottom: 14*@rex;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            .car_img{
+                width: 691*@rex;
+                height: 448*@rex;
+            }
+            .car_sing{
+                position: absolute;
+                left: 18*@rex;
+                bottom: 33*@rex;
+                width: 129*@rex;
+                height: 56*@rex;
+            }
+        }
+    }
+    .details{
+        position: absolute;
+        top: 5640*@rex;
+        width: 100%;
+        padding: 0 30*@rex;
+        box-sizing: border-box;
+        left: 0;
+        .detail{
+            margin-bottom: 54*@rex;
+            position: relative;
+            .detail_sing{
+                position: absolute;
+                top: 0;
+                width: 155*@rex;
+                height: 37*@rex;
+                img{
+                    width: 100%;
+                    height: 100%;
+                    float: left;
+                }
+            }
+            .detail_pic{
+                width: 691*@rex;
+                height: 485*@rex;
+                margin-top: 51*@rex;
+                border-bottom: 1px solid #31518e;
+                margin-bottom: 17*@rex;
+                .detail_img{
+                    width: 100%;
+                    height: 440*@rex;
+                    float: left;
+                }
+            }
+        }
+        .detail_one{
+            .detail_sing{
+                left: 0;
+            }
+        }
+        .detail_two{
+            .detail_sing{
+                right:0;
+            }
         }
     }
 }
