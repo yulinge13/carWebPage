@@ -17,8 +17,15 @@ import icon1 from '../../static/images/pic.png'
 import icon2 from '../../static/images/pic1.png'
 import icon3 from '../../static/images/pic2.png'
 import icon4 from '../../static/images/pic3.png'
+import {
+    message,
+} from 'antd';
 let { containHttp } = httpLists
-const { getProductInfo } = containHttp
+const {
+    getProductInfo,
+    getAllDistributorByArea,
+    makeAppointment
+} = containHttp
 class HomePage extends Component {
     constructor(props) {
         super(props)
@@ -70,7 +77,7 @@ class HomePage extends Component {
                     isChecked: false
                 }
             ],
-            selectCarListsVal: [],
+            selectCarListsVal: [],//选择的汽车类型
             provinceLists: [],//省
             provinceValue: '',//省的id
             cityLists: [],//城市
@@ -122,12 +129,19 @@ class HomePage extends Component {
                     url: pic4
                 }
             ],
-            distributorLists:[],//经销商
+            distributorLists: [],//经销商
+            distributorListsTwo: [],//经销商
+            distributorVal: '',//选择的经销商
+            provinceListsTwo: [],//省
+            provinceValueTwo: '',//省的id
+            cityListsTwo: [],//城市
+            cityValueTwo: '',//城市的id
 
         }
     }
     componentDidMount() {
         this.getAreaLists(0)
+        this.getAreaListsTwo(0)
     }
     componentWillReceiveProps() {
     }
@@ -147,29 +161,136 @@ class HomePage extends Component {
             }
         })
     }
+    //获取省市区
+    getAreaListsTwo(id) {
+        getProductInfo({ id }).then(res => {
+            if (res.success) {
+                if (id == 0) {
+                    this.setState({
+                        provinceListsTwo: res.data || []
+                    })
+                } else {
+                    this.setState({
+                        cityListsTwo: res.data || []
+                    })
+                }
+            }
+        })
+    }
     //获取选中的车子类型
     sendCheckedValues(val) {
-        console.log(val);
+        this.setState({
+            selectCarListsVal:val
+        })
     }
     //选择省份
     selectProvince(e) {
         const { value } = e.target
-        this.setState({
-            provinceValue: value
-        }, () => {
-            this.getAreaLists(value)
-        })
+        console.log(value);
+        if (value) {
+            this.setState({
+                provinceValue: value
+            }, () => {
+                this.getAreaLists(value)
+            })
+        } else {
+            this.setState({
+                provinceValue: '',
+                cityValue: '',
+                distributorVal: ""
+            })
+        }
     }
     //选择城市
     selectCity(e) {
         const { value } = e.target
-        this.setState({
-            cityValue: value
-        })
+        const { provinceValue, cityValue } = this.state
+        if (value) {
+            this.setState({
+                cityValue: value
+            }, () => {
+                this.getAllDistributorByArea(provinceValue, value)
+            })
+        } else {
+            this.setState({
+                cityValue: '',
+                distributorVal: ""
+            })
+        }
+    }
+    //选择省份 222222
+    selectProvinceTwo(e) {
+        const { value } = e.target
+        if (value) {
+            this.setState({
+                provinceValueTwo: value
+            }, () => {
+                this.getAreaListsTwo(value)
+            })
+        } else {
+            this.setState({
+                provinceValueTwo: '',
+                cityValueTwo: '',
+                distributorListsTwo:[]
+            })
+        }
+    }
+    //选择城市 222
+    selectCityTwo(e) {
+        const { value } = e.target
+        const { provinceValueTwo, } = this.state
+        if (value) {
+            this.setState({
+                cityValueTwo: value
+            }, () => {
+                this.getAllDistributorByAreaTwo(provinceValueTwo, value)
+            })
+        } else {
+            this.setState({
+                cityValueTwo: '',
+                distributorListsTwo:[]
+            })
+        }
     }
     //预约
     submitData() {
-
+        const {
+            name,
+            tel,
+            provinceValue,
+            cityValue,
+            distributorVal,
+            selectCarListsVal,
+            carLists
+        } = this.state
+        if( selectCarListsVal.length>0){
+            if(name && tel && provinceValue && cityValue && distributorVal){
+                var arr = []
+                selectCarListsVal.forEach(i => {
+                    carLists.forEach(k => {
+                        if(i === k.val){
+                            arr.push(k)
+                        }
+                    })
+                })
+                makeAppointment({
+                    carType:arr.join(),
+                    name,
+                    tel,
+                    provinceId:provinceValue,
+                    cityId:cityValue,
+                    distributorId:distributorVal
+                }).then(res => {
+                    if(res.success){
+                        message.success('预约成功！')
+                    }
+                })
+            }else{
+                message.error('请填写完整信息')
+            }
+        }else{
+            message.error('请选择要预约的车型')
+        }
     }
     //nav select
     selectNav(index) {
@@ -178,8 +299,40 @@ class HomePage extends Component {
         })
     }
     //选择经销商
-    selectDistributor(e){
-        console.log(e.target.value)
+    selectDistributor(e) {
+        this.setState({
+            distributorVal: e.target.value
+        })
+    }
+    //获取经销商
+    getAllDistributorByArea(provinceValue, cityValue) {
+        if (provinceValue && cityValue) {
+            getAllDistributorByArea({
+                provinceId: provinceValue,
+                cityId: cityValue
+            }).then(res => {
+                if (res.success) {
+                    this.setState({
+                        distributorLists: res.data
+                    })
+                }
+            })
+        }
+    }
+    //获取经销商
+    getAllDistributorByAreaTwo(provinceValue, cityValue) {
+        if (provinceValue && cityValue) {
+            getAllDistributorByArea({
+                provinceId: provinceValue,
+                cityId: cityValue
+            }).then(res => {
+                if (res.success) {
+                    this.setState({
+                        distributorListsTwo: res.data
+                    })
+                }
+            })
+        }
     }
     render() {
         const {
@@ -192,7 +345,15 @@ class HomePage extends Component {
             selectNavIndex,
             detailsPicListsOne,
             detailsPicListsTwo,
-            distributorLists
+            distributorLists,
+            provinceValue,
+            cityValue,
+            distributorVal,
+            provinceValueTwo,
+            cityValueTwo,
+            cityListsTwo,
+            provinceListsTwo,
+            distributorListsTwo,
         } = this.state
         return (
             <div className="home_page">
@@ -233,7 +394,10 @@ class HomePage extends Component {
                             <div className="fill_list_tow">
                                 <div className="fill_list_tow_name">省份</div>
                                 <div className="fill_list_tow_val">
-                                    <select onChange={e => this.selectProvince(e)}>
+                                    <select
+                                        onChange={e => this.selectProvince(e)}
+                                        value={provinceValue}
+                                    >
                                         <option value="" >请选择</option>
                                         {
                                             provinceLists.map((i, index) => {
@@ -248,7 +412,10 @@ class HomePage extends Component {
                             <div className="fill_list_tow fill_list_three">
                                 <div className="fill_list_tow_name">城市</div>
                                 <div className="fill_list_tow_val">
-                                    <select onChange={e => this.selectCity(e)}>
+                                    <select
+                                        onChange={e => this.selectCity(e)}
+                                        value={cityValue}
+                                    >
                                         <option value="" >请选择</option>
                                         {
                                             cityLists.map((i, index) => {
@@ -267,7 +434,10 @@ class HomePage extends Component {
                                 经销商
                             </div>
                             <div className="fill_val">
-                                <select onChange={e => this.selectDistributor(e)}>
+                                <select
+                                    onChange={e => this.selectDistributor(e)}
+                                    value={distributorVal}
+                                >
                                     <option value="" >请选择</option>
                                     {
                                         distributorLists.map((i, index) => {
@@ -293,10 +463,13 @@ class HomePage extends Component {
                             <div className="fill_list_tow">
                                 <div className="fill_list_tow_name">省份</div>
                                 <div className="fill_list_tow_val">
-                                    <select onChange={e => this.selectProvince(e)}>
+                                    <select
+                                        onChange={e => this.selectProvinceTwo(e)}
+                                        value={provinceValueTwo}
+                                    >
                                         <option value="" >请选择</option>
                                         {
-                                            provinceLists.map((i, index) => {
+                                            provinceListsTwo.map((i, index) => {
                                                 return (
                                                     <option value={i.id} key={index}>{i.area_name}</option>
                                                 )
@@ -308,10 +481,13 @@ class HomePage extends Component {
                             <div className="fill_list_tow fill_list_three">
                                 <div className="fill_list_tow_name">城市</div>
                                 <div className="fill_list_tow_val">
-                                    <select onChange={e => this.selectCity(e)}>
+                                    <select
+                                        onChange={e => this.selectCityTwo(e)}
+                                        value={cityValueTwo}
+                                    >
                                         <option value="" >请选择</option>
                                         {
-                                            cityLists.map((i, index) => {
+                                            cityListsTwo.map((i, index) => {
                                                 return (
                                                     <option value={i.id} key={index}>{i.area_name}</option>
                                                 )
@@ -324,10 +500,16 @@ class HomePage extends Component {
                         </div>
                     </div>
                     <div className="distributor_lists">
-                        <div className="distributor_list">
-                            <div className="distributor_name">啊实打实的</div>
-                            <div className="distributor_tel">028-122311122</div>
-                        </div>
+                        {
+                            distributorListsTwo.length > 0 ? distributorListsTwo.map((i, index) => {
+                                return (
+                                    <div className="distributor_list" key={index}>
+                                        <div className="distributor_name">{i.name}</div>
+                                        <div className="distributor_tel">{i.tel}</div>
+                                    </div>
+                                )
+                            }):<div style={{textAlign:'center'}}>暂无数据</div>
+                        }
                     </div>
                     <div className="distributor_tishi">
                         *经销商排名不分先后

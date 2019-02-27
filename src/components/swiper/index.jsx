@@ -16,7 +16,6 @@ export default class SwiperCom extends Component {
                 bulletActiveClass:"btn_active"
             },
         }
-        console.log(this);
         return (
             <div className="swiper" >
                 <Swiper {...params}>
