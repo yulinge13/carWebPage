@@ -2,6 +2,8 @@
 .home_page{
     width: 100%;
     min-height: 100%;
+    position: relative;
+    z-index: 100;
     .bg{
         width: 100%;
     }
@@ -48,6 +50,7 @@
                     padding-left: 10*@rex;
                     box-sizing: border-box;
                     font-size: 20*@rex;
+                    -webkit-appearance: none;
                 }
             }
         }
@@ -81,7 +84,7 @@
         height: 778*@rex;
         background: rgba(255, 255, 255, 0.8);
         position: absolute;
-        top: 1207*@rex;
+        top: 576*@rex;
         left: 29*@rex;
         padding-left: 65*@rex;
         box-sizing: border-box;
@@ -162,6 +165,7 @@
                         padding-left: 10*@rex;
                         box-sizing: border-box;
                         font-size: 20*@rex;
+                        -webkit-appearance: none;
                     }
                     input{
                         width: 100%;
@@ -231,7 +235,7 @@
         // height: 630*@rex;
         background: rgba(255, 255, 255,.8);
         left: 0;
-        top: 2286*@rex;
+        top: 1661*@rex;
         padding: 0 30*@rex;
         padding-top: 36*@rex;
         .choic_area{
@@ -240,6 +244,9 @@
         }
         .distributor_lists{
             padding-top: 36*@rex;
+            height: 405*@rex;
+            overflow: auto;
+            -webkit-overflow-scrolling : touch;
             .distributor_list{
                 display: flex;
                 height: 66*@rex;
@@ -271,7 +278,7 @@
         position: absolute;
         left: 0;
         width: 100%;
-        top: 4760*@rex;
+        top: 4112*@rex;
         box-sizing: border-box;
         .nav_lists{
             display: flex;
@@ -318,7 +325,7 @@
     }
     .details{
         position: absolute;
-        top: 5640*@rex;
+        top: 5029*@rex;
         width: 100%;
         padding: 0 30*@rex;
         box-sizing: border-box;
@@ -347,6 +354,13 @@
                     width: 100%;
                     height: 440*@rex;
                     float: left;
+                }
+                .detail_content{
+                    height: 43*@rex;
+                    line-height: 43*@rex;
+                    text-align: center;
+                    color: #bc0f2d;
+                    font-size: 17*@rex;
                 }
             }
         }

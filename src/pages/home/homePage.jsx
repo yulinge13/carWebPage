@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import './home.less'
-import bg from "../../static/images/bg.jpg"
+import bg from "../../static/images/bg.png"
 import httpLists from '../../utils/http'
 import SwiperCom from '../../components/swiper/index'
 import CheckedCom from '../../components/checked/index'
 import imgBg from '../../static/images/title.png'
-import pic1 from '../../static/images/pic10.jpg'
-import pic2 from '../../static/images/pic11.jpg'
-import pic3 from '../../static/images/pic12.jpg'
-import pic4 from '../../static/images/pic13.jpg'
+import pic1 from '../../static/images/pic10.png'
+import pic2 from '../../static/images/pic11.png'
+import pic3 from '../../static/images/pic12.png'
+import pic4 from '../../static/images/pic13.png'
 import sing1 from '../../static/images/tanyue.png'
 import sing2 from '../../static/images/tange.png'
 import sing3 from '../../static/images/tan.png'
@@ -32,48 +32,53 @@ class HomePage extends Component {
         this.state = {
             carLists: [
                 {
-                    name: '苹果',
+                    name: '探歌',
                     val: 1,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '捷达',
                     val: 2,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '速腾',
                     val: 3,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: 'CC',
                     val: 4,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '蔚领',
                     val: 5,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '探岳',
                     val: 6,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '宝来',
                     val: 7,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '迈腾',
                     val: 8,
                     isChecked: false
                 },
                 {
-                    name: '苹果',
+                    name: '高尔夫',
                     val: 9,
+                    isChecked: false
+                },
+                {
+                    name: '高尔夫嘉旅',
+                    val: 10,
                     isChecked: false
                 }
             ],
@@ -115,18 +120,38 @@ class HomePage extends Component {
             selectNavIndex: 0,
             detailsPicListsOne: [
                 {
-                    url: pic1
+                    url: require('../../static/images/pic20.png'),
+                    cont:'19英寸个性轮辋'
                 },
                 {
-                    url: pic2
+                    url: require('../../static/images/pic21.png'),
+                    cont:'大容积行李箱'
+                },
+                {
+                    url: require('../../static/images/pic22.png'),
+                    cont:'疲劳监测系统'
+                },
+                {
+                    url: require('../../static/images/pic23.png'),
+                    cont:'全新硬朗前脸'
                 }
             ],
             detailsPicListsTwo: [
                 {
-                    url: pic3
+                    url: require('../../static/images/pic30.png'),
+                    cont:'Clean Aie 2.0空气净化系统'
                 },
                 {
-                    url: pic4
+                    url: require('../../static/images/pic31.png'),
+                    cont:'电动可调外后视镜'
+                },
+                {
+                    url: require('../../static/images/pic32.png'),
+                    cont:'后配厢盖板上下可调'
+                },
+                {
+                    url: require('../../static/images/pic33.png'),
+                    cont:'展翼式中控'
                 }
             ],
             distributorLists: [],//经销商
@@ -265,26 +290,39 @@ class HomePage extends Component {
         } = this.state
         if( selectCarListsVal.length>0){
             if(name && tel && provinceValue && cityValue && distributorVal){
-                var arr = []
-                selectCarListsVal.forEach(i => {
-                    carLists.forEach(k => {
-                        if(i === k.val){
-                            arr.push(k)
+                if((/^1[34578]\d{9}$/.test(tel))){ 
+                    var arr = []
+                    selectCarListsVal.forEach(i => {
+                        carLists.forEach(k => {
+                            if(i === k.val){
+                                arr.push(k.name)
+                            }
+                        })
+                    })
+    
+                    makeAppointment({
+                        carType:arr.join(),
+                        name,
+                        tel,
+                        provinceId:provinceValue,
+                        cityId:cityValue,
+                        distributorId:distributorVal
+                    }).then(res => {
+                        if(res.success){
+                            message.success('预约成功！')
+                            // this.setState({
+                            //     name:'',
+                            //     tel:'',
+                            //     provinceValue:'',
+                            //     cityValue:'',
+                            //     distributorVal:'',
+                            //     selectCarListsVal:[]
+                            // })
                         }
                     })
-                })
-                makeAppointment({
-                    carType:arr.join(),
-                    name,
-                    tel,
-                    provinceId:provinceValue,
-                    cityId:cityValue,
-                    distributorId:distributorVal
-                }).then(res => {
-                    if(res.success){
-                        message.success('预约成功！')
-                    }
-                })
+                } else{
+                    message.error('请输入正确的手机号')
+                }
             }else{
                 message.error('请填写完整信息')
             }
@@ -354,6 +392,8 @@ class HomePage extends Component {
             cityListsTwo,
             provinceListsTwo,
             distributorListsTwo,
+            name,
+            tel
         } = this.state
         return (
             <div className="home_page">
@@ -377,7 +417,9 @@ class HomePage extends Component {
                                 姓名
                             </div>
                             <div className="fill_val">
-                                <input type="text" />
+                                <input type="text" value={name} onChange={e => this.setState({
+                                    name:e.target.value
+                                })}/>
                                 <img className="icon icon1" src={icon1} alt="" />
                             </div>
                         </div>
@@ -386,7 +428,9 @@ class HomePage extends Component {
                                 手机
                             </div>
                             <div className="fill_val">
-                                <input type="text" />
+                                <input type="text" value={tel} onChange={e => this.setState({
+                                    tel:e.target.value
+                                })}/>
                                 <img className="icon icon2" src={icon2} alt="" />
                             </div>
                         </div>
@@ -455,7 +499,7 @@ class HomePage extends Component {
                         <Checkbox />
                         <div className="is_read_cont">我已经阅读并同意《隐私政策》里的各项内容</div>
                     </div> */}
-                    <div className="submit_btn" onClick={this.submitData.bind(this)}>立即报名</div>
+                    <div className="submit_btn" onTouchStart={this.submitData.bind(this)}>立即报名</div>
                 </div>
                 <div className="distributor">
                     <div className="choic_area">
@@ -523,7 +567,7 @@ class HomePage extends Component {
                                     <div
                                         className={index === selectNavIndex ? 'nav_list nav_list_active' : 'nav_list'}
                                         key={index}
-                                        onClick={this.selectNav.bind(this, index)}
+                                        onTouchStart={this.selectNav.bind(this, index)}
                                     >{i.name}</div>
                                 )
                             })
@@ -566,6 +610,7 @@ class HomePage extends Component {
                                     return (
                                         <div className="detail_pic" key={index}>
                                             <img className="detail_img" src={i.url} />
+                                            <div className="detail_content">{i.cont}</div>
                                         </div>
                                     )
                                 })
@@ -582,6 +627,7 @@ class HomePage extends Component {
                                     return (
                                         <div className="detail_pic" key={index}>
                                             <img className="detail_img" src={i.url} />
+                                            <div className="detail_content">{i.cont}</div>
                                         </div>
                                     )
                                 })

@@ -62,7 +62,7 @@ export default class CheckedCom extends Component {
                 {
                     checkLists.map((i, index) => {
                         return (
-                            <div className="check_list" key={index} onClick={e => this.handleClick(e, i)}>
+                            <div className="check_list" key={index} onTouchStart={e => this.handleClick(e, i)}>
                                 <div className="check_input">
                                     {
                                         i.isChecked ? <div className="is_checked">
