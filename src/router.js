@@ -1,4 +1,5 @@
 import HomePage from './pages/home/homePage'
+import HomePageQ2 from './pages/homeQ2/index.jsx'
 import productAddPage from './pages/productAdd/productAdd'
 import ClassPage from './pages/class/class'
 import User from './pages/user/user'
@@ -10,6 +11,11 @@ export const router = [
     {
         path:'/',
         component:HomePage,
+        exact:true
+    },
+    {
+        path:'/q2',
+        component:HomePageQ2,
         exact:true
     },
     {
