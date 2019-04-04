@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './home.less'
-import bg from "../../static/images/bg.png"
+import bg from "../../static/images/bg.jpg"
 import httpLists from '../../utils/http'
 import SwiperCom from '../../components/swiper/index'
 import CheckedCom from '../../components/checked/index'
@@ -158,15 +158,17 @@ class HomePage extends Component {
             distributorListsTwo: [],//经销商
             distributorVal: '',//选择的经销商
             provinceListsTwo: [],//省
-            provinceValueTwo: '',//省的id
+            provinceValueTwo: 510000,//省的id
             cityListsTwo: [],//城市
-            cityValueTwo: '',//城市的id
+            cityValueTwo: 510100,//城市的id
 
         }
     }
     componentDidMount() {
         this.getAreaLists(0)
         this.getAreaListsTwo(0)
+        this.getAreaListsTwo(510000)
+        this.getAllDistributorByAreaTwo(510000,510100)
     }
     componentWillReceiveProps() {
     }
@@ -217,6 +219,7 @@ class HomePage extends Component {
                 provinceValue: value
             }, () => {
                 this.getAreaLists(value)
+                this.getAllDistributorByArea(value, null)
             })
         } else {
             this.setState({
@@ -241,6 +244,7 @@ class HomePage extends Component {
                 cityValue: '',
                 distributorVal: ""
             })
+            this.getAllDistributorByArea(provinceValue,null)
         }
     }
     //选择省份 222222
@@ -248,9 +252,10 @@ class HomePage extends Component {
         const { value } = e.target
         if (value) {
             this.setState({
-                provinceValueTwo: value
+                provinceValueTwo: value,
             }, () => {
                 this.getAreaListsTwo(value)
+                this.getAllDistributorByAreaTwo(value, null)
             })
         } else {
             this.setState({
@@ -273,8 +278,9 @@ class HomePage extends Component {
         } else {
             this.setState({
                 cityValueTwo: '',
-                distributorListsTwo:[]
+                distributorVal:""
             })
+            this.getAllDistributorByAreaTwo(provinceValueTwo,null)
         }
     }
     //预约
@@ -289,7 +295,7 @@ class HomePage extends Component {
             carLists
         } = this.state
         if( selectCarListsVal.length>0){
-            if(name && tel && provinceValue && cityValue && distributorVal){
+            if(name ){
                 if((/^1[34578]\d{9}$/.test(tel))){ 
                     var arr = []
                     selectCarListsVal.forEach(i => {
@@ -324,7 +330,7 @@ class HomePage extends Component {
                     message.error('请输入正确的手机号')
                 }
             }else{
-                message.error('请填写完整信息')
+                message.error('请填写名字')
             }
         }else{
             message.error('请选择要预约的车型')
@@ -344,7 +350,7 @@ class HomePage extends Component {
     }
     //获取经销商
     getAllDistributorByArea(provinceValue, cityValue) {
-        if (provinceValue && cityValue) {
+        if (provinceValue) {
             getAllDistributorByArea({
                 provinceId: provinceValue,
                 cityId: cityValue
@@ -359,7 +365,7 @@ class HomePage extends Component {
     }
     //获取经销商
     getAllDistributorByAreaTwo(provinceValue, cityValue) {
-        if (provinceValue && cityValue) {
+        if (provinceValue) {
             getAllDistributorByArea({
                 provinceId: provinceValue,
                 cityId: cityValue
