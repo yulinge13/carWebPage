@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
 import './index.less'
-import bg from "../../static/images/bg.png"
+import bg from "../../static/images/q2bg.jpg"
 import httpLists from '../../utils/http'
-import SwiperCom from '../../components/swiper/index'
+import SwiperCom from '../../components/swiperTwo/index'
 import CheckedCom from '../../components/checked/index'
-import imgBg from '../../static/images/title.png'
+import video1 from '../../static/images/vadio.mp4'
+import video2 from '../../static/images/vadio2.mp4'
 import pic1 from '../../static/images/pic10.png'
 import pic2 from '../../static/images/pic11.png'
 import pic3 from '../../static/images/pic12.png'
 import pic4 from '../../static/images/pic13.png'
-import sing1 from '../../static/images/tanyue.png'
-import sing2 from '../../static/images/tange.png'
-import sing3 from '../../static/images/tan.png'
-import sing4 from '../../static/images/ge.png'
-import icon1 from '../../static/images/pic.png'
-import icon2 from '../../static/images/pic1.png'
-import icon3 from '../../static/images/pic2.png'
-import icon4 from '../../static/images/pic3.png'
 import {
     message,
 } from 'antd';
@@ -87,26 +80,6 @@ class HomePage extends Component {
             provinceValue: '',//省的id
             cityLists: [],//城市
             cityValue: '',//城市的id
-            carBannerListsOne: [
-                {
-                    url: pic1,
-                    sing: sing1
-                },
-                {
-                    url: pic2,
-                    sing: sing1
-                },
-            ],
-            carBannerListsTwo: [
-                {
-                    url: pic3,
-                    sing: sing2
-                },
-                {
-                    url: pic4,
-                    sing: sing2
-                },
-            ],
             name: '',//姓名
             tel: '',//手机号
             navLists: [
@@ -117,56 +90,82 @@ class HomePage extends Component {
                     name: '探歌'
                 }
             ],
-            selectNavIndex: 0,
+            navValue: 0,
+            distributorLists: [],//经销商
+            distributorListsTwo: [],//经销商
+            distributorVal: '',//选择的经销商
+            provinceListsTwo: [],//省
+            provinceValueTwo: 510000,//省的id
+            cityListsTwo: [],//城市
+            cityValueTwo: 510100,//城市的id
+            vadiosValue: 0,//nav vadios 的index
+            vadiosNav: [
+                {
+                    name: '探岳视频'
+                },
+                {
+                    name: '探歌视频'
+                }
+            ],
             detailsPicListsOne: [
                 {
                     url: require('../../static/images/pic20.png'),
-                    cont:'19英寸个性轮辋'
+                    cont: '19英寸个性轮辋'
                 },
                 {
                     url: require('../../static/images/pic21.png'),
-                    cont:'大容积行李箱'
+                    cont: '大容积行李箱'
                 },
                 {
                     url: require('../../static/images/pic22.png'),
-                    cont:'疲劳监测系统'
+                    cont: '疲劳监测系统'
                 },
                 {
                     url: require('../../static/images/pic23.png'),
-                    cont:'全新硬朗前脸'
+                    cont: '全新硬朗前脸'
                 }
             ],
             detailsPicListsTwo: [
                 {
                     url: require('../../static/images/pic30.png'),
-                    cont:'Clean Aie 2.0空气净化系统'
+                    cont: 'Clean Aie 2.0空气净化系统'
                 },
                 {
                     url: require('../../static/images/pic31.png'),
-                    cont:'电动可调外后视镜'
+                    cont: '电动可调外后视镜'
                 },
                 {
                     url: require('../../static/images/pic32.png'),
-                    cont:'后配厢盖板上下可调'
+                    cont: '后配厢盖板上下可调'
                 },
                 {
                     url: require('../../static/images/pic33.png'),
-                    cont:'展翼式中控'
+                    cont: '展翼式中控'
                 }
             ],
-            distributorLists: [],//经销商
-            distributorListsTwo: [],//经销商
-            distributorVal: '',//选择的经销商
-            provinceListsTwo: [],//省
-            provinceValueTwo: '',//省的id
-            cityListsTwo: [],//城市
-            cityValueTwo: '',//城市的id
-
+            carBannerListsOne: [
+                {
+                    url: pic1,
+                },
+                {
+                    url: pic2,
+                },
+            ],
+            carBannerListsTwo: [
+                {
+                    url: pic3,
+                },
+                {
+                    url: pic4,
+                },
+            ],
         }
     }
     componentDidMount() {
         this.getAreaLists(0)
         this.getAreaListsTwo(0)
+        this.getAreaListsTwo(510000)
+        this.getAllDistributorByAreaTwo(510000, 510100)
     }
     componentWillReceiveProps() {
     }
@@ -205,7 +204,7 @@ class HomePage extends Component {
     //获取选中的车子类型
     sendCheckedValues(val) {
         this.setState({
-            selectCarListsVal:val
+            selectCarListsVal: val
         })
     }
     //选择省份
@@ -217,6 +216,7 @@ class HomePage extends Component {
                 provinceValue: value
             }, () => {
                 this.getAreaLists(value)
+                this.getAllDistributorByArea(value, null)
             })
         } else {
             this.setState({
@@ -241,6 +241,7 @@ class HomePage extends Component {
                 cityValue: '',
                 distributorVal: ""
             })
+            this.getAllDistributorByArea(provinceValue, null)
         }
     }
     //选择省份 222222
@@ -248,15 +249,16 @@ class HomePage extends Component {
         const { value } = e.target
         if (value) {
             this.setState({
-                provinceValueTwo: value
+                provinceValueTwo: value,
             }, () => {
                 this.getAreaListsTwo(value)
+                this.getAllDistributorByAreaTwo(value, null)
             })
         } else {
             this.setState({
                 provinceValueTwo: '',
                 cityValueTwo: '',
-                distributorListsTwo:[]
+                distributorListsTwo: []
             })
         }
     }
@@ -273,8 +275,9 @@ class HomePage extends Component {
         } else {
             this.setState({
                 cityValueTwo: '',
-                distributorListsTwo:[]
+                distributorVal: ""
             })
+            this.getAllDistributorByAreaTwo(provinceValueTwo, null)
         }
     }
     //预约
@@ -288,53 +291,40 @@ class HomePage extends Component {
             selectCarListsVal,
             carLists
         } = this.state
-        if( selectCarListsVal.length>0){
-            if(name && tel && provinceValue && cityValue && distributorVal){
-                if((/^1[34578]\d{9}$/.test(tel))){ 
+        if (selectCarListsVal.length > 0) {
+            if (name) {
+                if ((/^1[23456789]\d{9}$/.test(tel))) {
                     var arr = []
                     selectCarListsVal.forEach(i => {
                         carLists.forEach(k => {
-                            if(i === k.val){
+                            if (i === k.val) {
                                 arr.push(k.name)
                             }
                         })
                     })
-    
+
                     makeAppointment({
-                        carType:arr.join(),
+                        carType: arr.join(),
                         name,
                         tel,
-                        provinceId:provinceValue,
-                        cityId:cityValue,
-                        distributorId:distributorVal
+                        provinceId: provinceValue,
+                        cityId: cityValue,
+                        distributorId: distributorVal,
+                        from:2
                     }).then(res => {
-                        if(res.success){
+                        if (res.success) {
                             message.success('预约成功！')
-                            // this.setState({
-                            //     name:'',
-                            //     tel:'',
-                            //     provinceValue:'',
-                            //     cityValue:'',
-                            //     distributorVal:'',
-                            //     selectCarListsVal:[]
-                            // })
                         }
                     })
-                } else{
+                } else {
                     message.error('请输入正确的手机号')
                 }
-            }else{
-                message.error('请填写完整信息')
+            } else {
+                message.error('请填写名字')
             }
-        }else{
+        } else {
             message.error('请选择要预约的车型')
         }
-    }
-    //nav select
-    selectNav(index) {
-        this.setState({
-            selectNavIndex: index
-        })
     }
     //选择经销商
     selectDistributor(e) {
@@ -344,7 +334,7 @@ class HomePage extends Component {
     }
     //获取经销商
     getAllDistributorByArea(provinceValue, cityValue) {
-        if (provinceValue && cityValue) {
+        if (provinceValue) {
             getAllDistributorByArea({
                 provinceId: provinceValue,
                 cityId: cityValue
@@ -359,7 +349,7 @@ class HomePage extends Component {
     }
     //获取经销商
     getAllDistributorByAreaTwo(provinceValue, cityValue) {
-        if (provinceValue && cityValue) {
+        if (provinceValue) {
             getAllDistributorByArea({
                 provinceId: provinceValue,
                 cityId: cityValue
@@ -372,17 +362,22 @@ class HomePage extends Component {
             })
         }
     }
+    //切换视频
+    handleClickVadios(index) {
+        this.setState({
+            vadiosValue: index
+        })
+    }
+    handleClickNav(index){
+        this.setState({
+            navValue: index
+        })
+    }
     render() {
         const {
             carLists,
-            carBannerListsOne,
-            carBannerListsTwo,
             provinceLists,
             cityLists,
-            navLists,
-            selectNavIndex,
-            detailsPicListsOne,
-            detailsPicListsTwo,
             distributorLists,
             provinceValue,
             cityValue,
@@ -393,18 +388,108 @@ class HomePage extends Component {
             provinceListsTwo,
             distributorListsTwo,
             name,
-            tel
+            tel,
+            vadiosNav,
+            vadiosValue,
+            detailsPicListsOne,
+            detailsPicListsTwo,
+            carBannerListsOne,
+            carBannerListsTwo,
+            navLists,
+            navValue
         } = this.state
         return (
-            <div className="home_page">
+            <div className="home_page_two">
                 <img className="bg" src={bg} alt="" />
+                <div className="vadios">
+                    <div className="vadios_nav_lists">
+                        {
+                            vadiosNav.map((i, index) => {
+                                return (
+                                    <div className={vadiosValue === index ? 'vadios_nav_list vadios_nav_list_active' : 'vadios_nav_list'} key={index} onTouchStart={this.handleClickVadios.bind(this, index)}>
+                                        {i.name}
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="vadio">
+                        <video src={vadiosValue === 0 ? video2 : video1} controls="controls"></video>
+                    </div>
+                </div>
+                <div className="swiper_cont">
+                    <SwiperCom>
+                        {
+                            detailsPicListsOne.map((i, index) => {
+                                return (
+                                    <div className="detail_pic" key={index}>
+                                        <img className="detail_img" src={i.url} />
+                                        <div className="detail_content">{i.cont}</div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </SwiperCom>
+                </div>
+                <div className="swiper_cont swiper_cont_two">
+                    <SwiperCom>
+                        {
+                            detailsPicListsTwo.map((i, index) => {
+                                return (
+                                    <div className="detail_pic" key={index}>
+                                        <img className="detail_img" src={i.url} />
+                                        <div className="detail_content">{i.cont}</div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </SwiperCom>
+                </div>
+                <div className="vadios pic_lists_two">
+                    <div className="vadios_nav_lists">
+                        {
+                            navLists.map((i, index) => {
+                                return (
+                                    <div className={navValue === index ? 'vadios_nav_list vadios_nav_list_active' : 'vadios_nav_list'} key={index} onTouchStart={this.handleClickNav.bind(this, index)}>
+                                        {i.name}
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="swiper_pic_lists">
+                        {
+                            navValue === 0 ? (
+                                <div className="swiper_pic_list">
+                                    <SwiperCom>
+                                        {
+                                            carBannerListsOne.map((i, index) => {
+                                                return (
+                                                    <div className="detail_pic" key={index}>
+                                                        <img className="detail_img" src={i.url} />
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </SwiperCom>
+                                </div>
+                            ) : (<div className="swiper_pic_list">
+                                <SwiperCom>
+                                    {
+                                        carBannerListsTwo.map((i, index) => {
+                                            return (
+                                                <div className="detail_pic" key={index}>
+                                                    <img className="detail_img" src={i.url} />
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </SwiperCom>
+                            </div>)
+                        }
+                    </div>
+                </div>
                 <div className="ask_price">
-                    <div className="title_bg">
-                        <img src={imgBg} />
-                    </div>
-                    <div className="title">
-                        *请选择您的关注车型
-                    </div>
                     <div className="choice_car">
                         <CheckedCom
                             sendCheckedValues={this.sendCheckedValues.bind(this)}
@@ -418,9 +503,8 @@ class HomePage extends Component {
                             </div>
                             <div className="fill_val">
                                 <input type="text" value={name} onChange={e => this.setState({
-                                    name:e.target.value
-                                })}/>
-                                <img className="icon icon1" src={icon1} alt="" />
+                                    name: e.target.value
+                                })} />
                             </div>
                         </div>
                         <div className="fill_list">
@@ -429,9 +513,8 @@ class HomePage extends Component {
                             </div>
                             <div className="fill_val">
                                 <input type="text" value={tel} onChange={e => this.setState({
-                                    tel:e.target.value
-                                })}/>
-                                <img className="icon icon2" src={icon2} alt="" />
+                                    tel: e.target.value
+                                })} />
                             </div>
                         </div>
                         <div className="fill_lists_tow">
@@ -469,7 +552,6 @@ class HomePage extends Component {
                                             })
                                         }
                                     </select>
-                                    <img className="icon" src={icon3} alt="" />
                                 </div>
                             </div>
                         </div>
@@ -491,14 +573,9 @@ class HomePage extends Component {
                                         })
                                     }
                                 </select>
-                                <img className="icon icon3" src={icon4} alt="" />
                             </div>
                         </div>
                     </div>
-                    {/* <div className="is_read">
-                        <Checkbox />
-                        <div className="is_read_cont">我已经阅读并同意《隐私政策》里的各项内容</div>
-                    </div> */}
                     <div className="submit_btn" onTouchStart={this.submitData.bind(this)}>立即报名</div>
                 </div>
                 <div className="distributor">
@@ -538,7 +615,6 @@ class HomePage extends Component {
                                             })
                                         }
                                     </select>
-                                    <img className="icon" src={icon3} alt="" />
                                 </div>
                             </div>
                         </div>
@@ -552,87 +628,11 @@ class HomePage extends Component {
                                         <div className="distributor_tel">{i.tel}</div>
                                     </div>
                                 )
-                            }):<div style={{textAlign:'center'}}>暂无数据</div>
+                            }) : <div style={{ textAlign: 'center' }}>暂无数据</div>
                         }
                     </div>
                     <div className="distributor_tishi">
                         *经销商排名不分先后
-                    </div>
-                </div>
-                <div className="car_swiper_one">
-                    <div className="nav_lists">
-                        {
-                            navLists.map((i, index) => {
-                                return (
-                                    <div
-                                        className={index === selectNavIndex ? 'nav_list nav_list_active' : 'nav_list'}
-                                        key={index}
-                                        onTouchStart={this.selectNav.bind(this, index)}
-                                    >{i.name}</div>
-                                )
-                            })
-                        }
-                    </div>
-                    {
-                        selectNavIndex === 0 ? <SwiperCom>
-                            {
-                                carBannerListsOne.map((i, index) => {
-                                    return (
-                                        <div className="car_pic" key={index}>
-                                            <img className="car_img" src={i.url} />
-                                            <img className="car_sing" src={i.sing} />
-                                        </div>
-                                    )
-                                })
-                            }
-                        </SwiperCom> : <SwiperCom>
-                                {
-                                    carBannerListsTwo.map((i, index) => {
-                                        return (
-                                            <div className="car_pic" key={index}>
-                                                <img className="car_img" src={i.url} />
-                                                <img className="car_sing" src={i.sing} />
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </SwiperCom>
-                    }
-                </div>
-                <div className="details">
-                    <div className="detail detail_one">
-                        <div className="detail_sing">
-                            <img src={sing3} />
-                        </div>
-                        <SwiperCom>
-                            {
-                                detailsPicListsOne.map((i, index) => {
-                                    return (
-                                        <div className="detail_pic" key={index}>
-                                            <img className="detail_img" src={i.url} />
-                                            <div className="detail_content">{i.cont}</div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </SwiperCom>
-                    </div>
-                    <div className="detail detail_two">
-                        <div className="detail_sing">
-                            <img src={sing4} />
-                        </div>
-                        <SwiperCom>
-                            {
-                                detailsPicListsTwo.map((i, index) => {
-                                    return (
-                                        <div className="detail_pic" key={index}>
-                                            <img className="detail_img" src={i.url} />
-                                            <div className="detail_content">{i.cont}</div>
-                                        </div>
-                                    )
-                                })
-                            }
-                        </SwiperCom>
                     </div>
                 </div>
             </div>

@@ -296,7 +296,7 @@ class HomePage extends Component {
         } = this.state
         if( selectCarListsVal.length>0){
             if(name ){
-                if((/^1[34578]\d{9}$/.test(tel))){ 
+                if((/^1[23456789]\d{9}$/.test(tel))){ 
                     var arr = []
                     selectCarListsVal.forEach(i => {
                         carLists.forEach(k => {
@@ -312,7 +312,8 @@ class HomePage extends Component {
                         tel,
                         provinceId:provinceValue,
                         cityId:cityValue,
-                        distributorId:distributorVal
+                        distributorId:distributorVal,
+                        from:1
                     }).then(res => {
                         if(res.success){
                             message.success('预约成功！')
